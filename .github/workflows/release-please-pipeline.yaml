@@ -1,0 +1,37 @@
+name: Release Please
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - release/*
+
+concurrency:
+  group: release-please
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  # =====================================================
+  # Releasing new versions for components
+  # =====================================================
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      releases-grouped: ${{ steps.releases.outputs.releases-grouped }}
+      python: ${{ steps.releases.outputs.python }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: release
+        uses: googleapis/release-please-action@v4.3
+        with:
+          target-branch: ${{ github.ref_name }}
+          token: ${{ steps.get-write-token.outputs.token }}
+
