@@ -1,0 +1,27 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "separate-pull-requests": true,
+  "bump-minor-pre-major": true,
+  "packages": {
+    "apps/app-1": {
+      "component": "app-1",
+      "release-type": "simple",
+      "initial-version": "0.1.0"
+    },
+    "apps/app-2": {
+      "component": "app-2",
+      "release-type": "simple",
+      "initial-version": "0.1.0"
+    }
+  },
+  "plugins": [
+    {
+      "type": "linked-versions",
+      "groupName": "simpod",
+      "components": [
+        "app-1",
+        "app-2"
+      ]
+    }
+  ]
+}
