@@ -33,5 +33,5 @@ jobs:
         uses: googleapis/release-please-action@v4.3
         with:
           target-branch: ${{ github.ref_name }}
-          token: ${{ steps.get-write-token.outputs.token }}
+          token: ${{ secrets.MY_RELEASE_PLEASE_TOKEN }}
 
