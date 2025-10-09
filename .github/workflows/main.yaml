@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     if: always()
     outputs:
-      cleanup_result: ${{ job.status }}
+      cleanup_result: "[ ${{ job.status }} ]"
     steps:
     - id: first
       run: echo first cleanup step
