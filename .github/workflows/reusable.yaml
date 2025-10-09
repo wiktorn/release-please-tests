@@ -19,9 +19,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - id: first
-      run: echo first step
+      run: echo first step, inputs.one= ${{ inputs.one }}
     - id: second
-      run: echo second step
+      run: |
+        if [[ ${{ inputs.one }} -eq 1 ]] ; then
+          exit 1
+        fi
+        echo second step
   cleanup:
     needs: [deploy]
     runs-on: ubuntu-latest
@@ -30,4 +34,8 @@ jobs:
     - id: first
       run: echo first cleanup step
     - id: second
-      run: echo second cleanup step
+      run: |
+        if [[ ${{ inputs.one }} -eq 2 ]] ; then
+          exit 1
+        fi
+        echo second step
