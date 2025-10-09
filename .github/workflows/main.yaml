@@ -23,10 +23,16 @@ jobs:
     runs-on: ubuntu-latest
     if: always()
     steps:
-      - id: result
-        run: echo needs.reusables.result=${{ toJSON(needs.reusables.result) }}
-      - id: output
-        run: echo needs.reusables.outputs.cleanup_result=${{ toJSON(needs.reusables.outputs.cleanup_result) }}
-      - name: Iterate over matrix outputs
+      - name: Dump outputs context
+        env:
+          OUTPUTS_CONTEXT: ${{ toJSON(needs.reusables.outputs) }}
         run: |
-          echo "${{ toJSON(needs.reusables.outputs) }}"
+          echo "Outputs context is:"
+          echo "$OUTPUTS_CONTEXT"
+      - name: Iterate over matrix outputs (if outputs object is a matrix)
+        env:
+          OUTPUTS_CONTEXT: ${{ toJSON(needs.reusables.outputs) }}
+        run: |
+          # This assumes the output is an object of objects, as per documentation
+          # If the dump step shows a single object, this step might fail or produce no output
+          echo "$OUTPUTS_CONTEXT" | jq -r 'to_entries[] | "Matrix key \(.key): cleanup_result is \(.value.cleanup_result)"'

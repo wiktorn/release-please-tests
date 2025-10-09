@@ -20,7 +20,7 @@ jobs:
     - id: second
       run: |
         if [[ ${{ inputs.one }} -eq 1 ]] ; then
-          exit 1
+          echo "Intentionally not failing for one=1"
         fi
         echo second step
   cleanup:
@@ -33,6 +33,6 @@ jobs:
     - id: second
       run: |
         if [[ ${{ inputs.one }} -eq 2 ]] ; then
-          exit 1
+          echo "Intentionally not failing for one=2"
         fi
         echo second step
