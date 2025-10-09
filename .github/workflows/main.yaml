@@ -1,0 +1,29 @@
+name: "Main workflow"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  reusables:
+    strategy:
+      max-parallel: 3
+      fail-fast: false
+      matrix:
+        one:
+        - 1
+        - 2
+        - 3
+        - 4
+    uses: ./.github/workflows/reusable.yaml
+    with:
+      one: ${{ matrix.one }}
+
+  check_outputs:
+    needs: [reusables]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - id: result
+        run: echo ${{ needs.reusables.result }}
+      - id: output
+        run: echo ${{ needs.reusables.outputs.cleanup_result }}

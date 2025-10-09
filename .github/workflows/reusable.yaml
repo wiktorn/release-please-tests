@@ -1,0 +1,33 @@
+name: "Reusable workflow"
+
+on:
+  workflow_call:
+    inputs:
+      one:
+        required: true
+        type: string
+    outputs:
+      cleanup_result:
+        description: Status of the cleanup job
+        value: ${{ jobs.cleanup.result }}
+      cleanup_result_dummy:
+        description: This needs to be accessed (although its empty) so jobs.cleanup.result above actually works
+        value: ${{ jobs.cleanup.outputs.cleanup_result }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - id: first
+      run: echo first step
+    - id: second
+      run: echo second step
+  cleanup:
+    needs: [deploy]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+    - id: first
+      run: echo first cleanup step
+    - id: second
+      run: echo second cleanup step
