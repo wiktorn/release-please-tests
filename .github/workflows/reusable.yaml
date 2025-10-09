@@ -10,9 +10,6 @@ on:
       cleanup_result:
         description: Status of the cleanup job
         value: ${{ jobs.cleanup.result }}
-      cleanup_result_dummy:
-        description: This needs to be accessed (although its empty) so jobs.cleanup.result above actually works
-        value: ${{ jobs.cleanup.outputs.cleanup_result }}
 
 jobs:
   deploy:

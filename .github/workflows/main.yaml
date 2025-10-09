@@ -24,6 +24,6 @@ jobs:
     if: always()
     steps:
       - id: result
-        run: echo needs.reusables.result=${{ needs.reusables.result }}
+        run: echo needs.reusables.result=${{ toJSON(needs.reusables.result) }}
       - id: output
-        run: echo needs.reusables.outputs.cleanup_result=${{ needs.reusables.outputs.cleanup_result }}
+        run: echo needs.reusables.outputs.cleanup_result=${{ toJSON(needs.reusables.outputs.cleanup_result) }}
