@@ -27,3 +27,6 @@ jobs:
         run: echo needs.reusables.result=${{ toJSON(needs.reusables.result) }}
       - id: output
         run: echo needs.reusables.outputs.cleanup_result=${{ toJSON(needs.reusables.outputs.cleanup_result) }}
+      - name: Iterate over matrix outputs
+        run: |
+          echo "${{ toJSON(needs.reusables.outputs) }}"
