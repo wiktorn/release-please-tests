@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  reusables:
+  deploy:
     strategy:
       max-parallel: 3
       fail-fast: false
@@ -14,25 +14,55 @@ jobs:
         - 2
         - 3
         - 4
-    uses: ./.github/workflows/reusable.yaml
-    with:
-      one: ${{ matrix.one }}
+    runs-on: ubuntu-latest
+    steps:
+    - id: first
+      run: echo first step, matrix.one= ${{ matrix.one }}
+    - id: second
+      run: |
+        if [[ ${{ matrix.one }} -eq 1 ]] ; then
+          exit 1
+        fi
+        echo second step
+
+  cleanup:
+    strategy:
+      max-parallel: 3
+      fail-fast: false
+      matrix:
+        one:
+        - 1
+        - 2
+        - 3
+        - 4
+    needs: [deploy]
+    runs-on: ubuntu-latest
+    if: always()
+    outputs:
+      cleanup_result: ${{ job.status }}
+    steps:
+    - id: first
+      run: echo first cleanup step
+    - id: second
+      run: |
+        if [[ ${{ matrix.one }} -eq 2 ]] ; then
+          exit 1
+        fi
+        echo second step
 
   check_outputs:
-    needs: [reusables]
+    needs: [cleanup]
     runs-on: ubuntu-latest
     if: always()
     steps:
       - name: Dump outputs context
         env:
-          OUTPUTS_CONTEXT: ${{ toJSON(needs.reusables.outputs) }}
+          OUTPUTS_CONTEXT: ${{ toJSON(needs.cleanup.outputs) }}
         run: |
           echo "Outputs context is:"
           echo "$OUTPUTS_CONTEXT"
-      - name: Iterate over matrix outputs (if outputs object is a matrix)
+      - name: Iterate over matrix outputs
         env:
-          OUTPUTS_CONTEXT: ${{ toJSON(needs.reusables.outputs) }}
+          OUTPUTS_CONTEXT: ${{ toJSON(needs.cleanup.outputs) }}
         run: |
-          # This assumes the output is an object of objects, as per documentation
-          # If the dump step shows a single object, this step might fail or produce no output
           echo "$OUTPUTS_CONTEXT" | jq -r 'to_entries[] | "Matrix key \(.key): cleanup_result is \(.value.cleanup_result)"'
